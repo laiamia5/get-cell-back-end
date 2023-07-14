@@ -17,7 +17,7 @@ app.use(cors())
 app.use('/productos', rutaProducto)
 app.use('/compras', rutaCompras)
 app.use('/realizar-pedido', rutaPedido )
-app.use('usuarios', rutaUsuario)
+app.use('/usuarios', rutaUsuario)
 
 database
 .sync({alter: true})

@@ -24,12 +24,12 @@ rutaUsuario.post('/signup', async (req, res) => {
 
     const {nombre, apellido, email, contraseña, dni, codigo_postal, telefono, direccion_provincia, direccion_localidad, direccion_calles, direccion_barrio, registrado} = req.body
 
-    // const usuario_ingresante = await usuario.findOne({ where: { email }})
+    const usuario_ingresante = await usuario.findOne({ where: { email }})
     try{
         let hash;
         if(contraseña) hash = await bcrypt.hash(contraseña, 10)
 
-        // if(usuario_ingresante == null){
+        if(usuario_ingresante == null){
             let creacion = await usuario.create({
                 nombre: nombre,
                 apellido: apellido,
@@ -44,9 +44,9 @@ rutaUsuario.post('/signup', async (req, res) => {
                 codigo_postal
              })
              res.status(200).send(creacion)
-        // }else{
-            // res.status(400).send('error! el usuario ya existe, inicia sesion con el mismo o crea una cuenta diferente')
-        // }
+        }else{
+            res.status(400).send('error! el usuario ya existe, inicia sesion con el mismo o crea una cuenta diferente')
+        }
     }catch(err){
          res.status(400).send(err.message)
     }
@@ -98,35 +98,8 @@ const verifyToken = (req, res, next) => {
         req.user = user
         next();
     })
-    
+
 }
-//===========================buscar usuario po dni=========================
-
-rutaUsuario.get('/:email',  async (req, res) => { 
-    const {email} = req.params
-    try{
-        let encontrar = await usuario.findOne({where: {email: email, registrado: true}})
-         res.status(200).send(encontrar) 
-    }catch(err){
-        res.status(400).send(err.message)
-    }
-})
-
-
-// -----------------------------OBTENER PERFIL DE USUARIO------------------------------
-
-rutaUsuario.get('/profile/:id',  async (req, res) => { 
-
-    let idusuario = req.params.id
-    console.log(req.cookies)
-    try{
-        let user = await usuario.findByPk(idusuario)
-        res.send(user)
-    }catch(err){
-        res.status(401).send('error de acceso')
-    }
-
-})
 
 // -------------------------------COMPLETAR INFORMACION DEL USUARIO-------------------------------------------
 
@@ -141,7 +114,22 @@ rutaUsuario.put('/:id', async (req, res) => {
     }
 })
 
+// -----------------------------OBTENER PERFIL DE USUARIO AL LOGUEAR------------------------------
 
+rutaUsuario.get('/perfil/:token',  async (req, res) => { 
+
+    const tokenUs = req.params.token
+
+    jwt.verify(tokenUs, process.env.SECRET_TOKEN, async (err, user) => {
+
+        if(err) return res.status(403).send('token invalido')
+        else{ 
+            let usuarioACt = await usuario.findByPk(user.id)
+            return res.status(200).send(usuarioACt)
+        }
+    })
+
+})
 
 
 module.exports = rutaUsuario
