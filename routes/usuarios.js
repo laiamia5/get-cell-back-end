@@ -22,14 +22,14 @@ rutaUsuario.get('/', async (req, res) => {
 
 rutaUsuario.post('/signup', async (req, res) => {
 
-    const {nombre, apellido, email, contraseña, dni, codigo_postal, telefono, direccion_provincia, direccion_localidad, direccion_calles, direccion_barrio, registrado} = req.body
+    const {nombre, apellido, foto, email, contraseña, dni, codigo_postal, telefono, direccion_provincia, direccion_localidad, direccion_calles, direccion_barrio, registrado} = req.body
 
     const usuario_ingresante = await usuario.findOne({ where: { email }})
     try{
         let hash;
         if(contraseña) hash = await bcrypt.hash(contraseña, 10)
 
-        if(usuario_ingresante == null){
+        if(usuario_ingresante == null || usuario_ingresante == undefined){
             let creacion = await usuario.create({
                 nombre: nombre,
                 apellido: apellido,
@@ -41,7 +41,8 @@ rutaUsuario.post('/signup', async (req, res) => {
                 direccion_localidad,
                 direccion_barrio,
                 direccion_calles,
-                codigo_postal
+                codigo_postal,
+                foto
              })
              res.status(200).send(creacion)
         }else{

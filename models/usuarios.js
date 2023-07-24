@@ -15,16 +15,16 @@ module.exports = (sequelize) => {
         },
         email:{
             type: DataTypes.TEXT,
-            allowNull: false,
-            unique: true
+            // allowNull: false,
+            // unique: true
         },
         contraseña:{
             type: DataTypes.STRING,
-            allowNull: false,
+            // allowNull: false,
         },
         dni: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            // allowNull: false,
         },
         telefono: {
             type: DataTypes.STRING
@@ -48,6 +48,12 @@ module.exports = (sequelize) => {
         admin:{
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        foto: {
+            type: DataTypes.TEXT
+        },
+        googleId: {
+            type: DataTypes.STRING,
         }
     },{timestamps: false})
 }
