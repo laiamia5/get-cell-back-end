@@ -3,6 +3,7 @@ const { usuario } = require('../db')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 require('dotenv').config()
+const {enviar_clientes, enviar_empresa } = require('../controller/nodemailer')
 
 const rutaUsuario  = Router()
 
@@ -22,7 +23,7 @@ rutaUsuario.get('/', async (req, res) => {
 
 rutaUsuario.post('/signup', async (req, res) => {
 
-    const {nombre, apellido, foto, email, contraseña, dni, codigo_postal, telefono, direccion_provincia, direccion_localidad, direccion_calles, direccion_barrio, registrado} = req.body
+    const {admin, nombre, apellido, foto, email, contraseña, dni, codigo_postal, telefono, direccion_provincia, direccion_localidad, direccion_calles, direccion_barrio, registrado} = req.body
 
     const usuario_ingresante = await usuario.findOne({ where: { email }})
     try{
@@ -42,7 +43,8 @@ rutaUsuario.post('/signup', async (req, res) => {
                 direccion_barrio,
                 direccion_calles,
                 codigo_postal,
-                foto
+                foto,
+                admin
              })
              res.status(200).send(creacion)
         }else{
@@ -132,5 +134,37 @@ rutaUsuario.get('/perfil/:token',  async (req, res) => {
 
 })
 
+/////////////////////////////CONSULTAR ADMIN////////////////////////////////
+
+rutaUsuario.get('/esAdmin/:id', async (req, res) => {
+    const id = req.params.id
+    try{
+        let encuentra = await usuario.findByPk(id)
+        encuentra.admin === true
+        ? res.status(200).send(true)
+        : res.status(200).send(false)
+        
+    }catch(err){
+        res.status(400).send(null)
+    }
+})
+
+///////////////////////////////////ENVIAR EMAIL/////////////////////////////////////////////////////////
+
+rutaUsuario.post('/envio-mail', async (req, res) => {
+    const {asunto, mensaje, email, destino} = req.body
+
+    try{
+        if(destino === 'empresa'){
+            enviar_empresa(asunto, mensaje, email)
+        }else{
+            enviar_clientes(asunto, mensaje, email)
+        }
+        res.status(200).send('mensaje enviado con exito')
+    }catch(err){
+        res.status(400).send('error')
+    }
+
+})
 
 module.exports = rutaUsuario
