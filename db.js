@@ -4,6 +4,7 @@ const compras = require('./models/compras')
 const pedidos = require('./models/pedido') 
 const productos = require('./models/productos')
 const subscribir = require('./models/subscribe')
+const cupones = require('./models/cupones')
 require('dotenv').config()
 
 let usuarioDB = process.env.DB_USER
@@ -19,8 +20,9 @@ compras(database)
 pedidos(database)
 productos(database)
 subscribir(database)
+cupones(database)
 
-const {producto, usuario, pedido, compra, subscribe} = database.models
+const {producto, usuario, pedido, compra, subscribe, cupon} = database.models
 
 producto.hasMany(pedido,{
     foreignKey:'productoId'
@@ -35,4 +37,4 @@ producto.hasMany(pedido,{
   })
   compra.belongsTo(usuario);
 
-module.exports = {database, producto, usuario, pedido, compra, subscribe}
+module.exports = {database, producto, usuario, pedido, compra, subscribe, cupon}

@@ -5,9 +5,11 @@ const rutaCompras = require('./routes/compras')
 const rutaPedido = require('./routes/pedidos')
 const rutaUsuario = require('./routes/usuarios')
 const passportG = require('./controller/passport-google')
+const rutaSubscribe = require('./routes/subscribe')
 require('dotenv').config()
 const app = express()
 const {database} = require('./db')
+const rutaCupon = require('./routes/cupones')
 
 //middlewares
 app.use(express.urlencoded({extended: true}))
@@ -15,10 +17,12 @@ app.use(express.json())
 app.use(cors())
 
 //aca hirian las rutas 
+app.use('/cupones', rutaCupon)
 app.use('/productos', rutaProducto)
 app.use('/compras', rutaCompras)
 app.use('/realizar-pedido', rutaPedido )
 app.use('/usuarios', rutaUsuario)
+app.use('/subscribe', rutaSubscribe)
 app.use('/', passportG)
 
 database

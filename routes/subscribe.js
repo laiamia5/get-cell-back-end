@@ -3,18 +3,20 @@ const {subscribe} = require('../db')
 
 const rutaSubscribe = Router()
 
-// rutaSubscribe.post('/subscribirse', (req, res) => {
-    
-//  try{
+rutaSubscribe.post('/', async (req, res) => {
+    const {email, nombre} = req.body
+    try{
+        let user = await subscribe.create({
+            email,
+            nombre
+        })
+        res.status(200).send(`${nombre} se subscribio con exito`)
+    }catch(err){
+        res.status(400).send(err.message)
+    }
+})
 
-//  }catch(err){
-
-//  }
-// })
-
-
-
-rutaSubscribe.get('/subscribirse', async (req, res) => {
+rutaSubscribe.get('/', async (req, res) => {
     try{
        let to = await subscribe.findAll()
        res.status(200).send(to)
