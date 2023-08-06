@@ -13,5 +13,13 @@ const paginar = async (array) => {
     return result
 } 
 
+const setearCompra = async (idCompra) => {
+    try{
+        const cambiarEstadoCompra = await compra.update( { pago: 'pagado'} , { where: { id: idCompra } })
+        res.status(200).json(cambiarEstadoCompra)
+    }catch(err){
+        res.status(400).send(err.message)
+    }
+}
 
-module.exports = {paginar}
+module.exports = {paginar, setearCompra}

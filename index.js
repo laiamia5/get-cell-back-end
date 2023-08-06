@@ -10,6 +10,7 @@ require('dotenv').config()
 const app = express()
 const {database} = require('./db')
 const rutaCupon = require('./routes/cupones')
+const payRouter = require('./controller/mercadopago')
 
 //middlewares
 app.use(express.urlencoded({extended: true}))
@@ -23,6 +24,7 @@ app.use('/compras', rutaCompras)
 app.use('/realizar-pedido', rutaPedido )
 app.use('/usuarios', rutaUsuario)
 app.use('/subscribe', rutaSubscribe)
+app.use('/pagar', payRouter)
 app.use('/', passportG)
 
 database
