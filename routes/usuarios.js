@@ -167,4 +167,16 @@ rutaUsuario.post('/envio-mail', async (req, res) => {
 
 })
 
+
+//////////////////////////////CONSULTAR REGISTRO/////////////////////////////////////////////
+
+rutaUsuario.get('/buscar/:dni', async (req, res) => {
+    const {dni} = req.params
+    try{
+        let busquedaUser = await usuario.findOne({where: { dni: dni}}) 
+        res.status(200).send(busquedaUser)
+    }catch(err){
+        res.status(400).send(err)
+    }
+})
 module.exports = rutaUsuario

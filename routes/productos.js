@@ -103,7 +103,36 @@ rutaProducto.delete('/:id', async (req, res) => {
         res.status(400).send(err)
     }
 })
+ 
+// ========================================= BORRADO LOGICO ===========================================================
 
+
+rutaProducto.put('/descontar-stock/:id', async (req, res) => {
+    const {id} = req.params
+    const {cantidad} = req.body
+    try{
+        let data_producto = await producto.findOne({where: {id}})
+        const  {nombre, precio, categoria, descripcion, marca, stock, img, precio_anterior} = data_producto
+
+        let stock_actual = stock - cantidad
+
+        const descontar = await producto.update({
+            nombre, 
+            precio, 
+            categoria, 
+            descripcion, 
+            marca, 
+            stock : stock_actual,
+            precio_anterior,
+            img, 
+            display: Math.sign(stock_actual) === 1 ? true : false
+        } , { where: { id } })
+        res.status(200).send('¡ stock actualizado !')
+    }
+    catch(err){
+        res.status(400).send(err)
+    }
+})
 
 
 
